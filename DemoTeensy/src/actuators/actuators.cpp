@@ -23,14 +23,14 @@ void ServoAct::write(uint8_t pos){
 /***** class SimpleArm ******/
 
 //constructor
-SimpleArm::SimpleArm(){
+SimpleArm::SimpleArm(uint8_t gripperPin, uint8_t armPin);{
 
     // create two servo devices (ServoAct(min, max, default))
     _rotat = ServoAct(FRONT, PLATE, MIDDLE);
     _grip = ServoAct(OPEN, CLOSED, CLOSED);
 
-    _rotat.attach(SERVO_GRIP_ROTATION);
-    _grip.attach(SERVO_GRIP);
+    _rotat.attach(armPin);
+    _grip.attach(gripperPin);
 
     toDefault();
 }
@@ -43,9 +43,9 @@ void SimpleArm::toDefault(){
 
 /***** class PlateHolder ******/
 
-PlateHolder::PlateHolder(){
+PlateHolder::PlateHolder(uint8_t servoPin){
     _servo = ServoAct(CLOSED, OPEN, CLOSED);
-    _servo.attach(SERVO_PLATE);
+    _servo.attach(servoPin);
 
     toDefault();
 }

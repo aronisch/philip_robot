@@ -44,7 +44,7 @@ class SimpleArm
     ServoAct _grip;
     ServoAct _rotat;
   public: 
-    SimpleArm();
+    SimpleArm(uint8_t gripperPin, uint8_t armPin);
     
     //functions to use the robotic arm 
     void open()     {    _grip.write(OPEN);     };
@@ -70,7 +70,7 @@ class PlateHolder
     ServoAct _servo;
   public:
 
-    PlateHolder();
+    PlateHolder(uint8_t servoPin);
     
     //functions to use the robotic arm 
     void open()     {    _servo.write(OPEN);     };
