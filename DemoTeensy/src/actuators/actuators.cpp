@@ -23,7 +23,7 @@ void ServoAct::write(uint8_t pos){
 /***** class SimpleArm ******/
 
 //constructor
-SimpleArm::SimpleArm(uint8_t gripperPin, uint8_t armPin);{
+SimpleArm::SimpleArm(uint8_t gripperPin, uint8_t armPin){
 
     // create two servo devices (ServoAct(min, max, default))
     _rotat = ServoAct(FRONT, PLATE, MIDDLE);
