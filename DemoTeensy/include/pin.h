@@ -1,5 +1,4 @@
 #pragma once
-#include <Wire.h>
 //Pin Structure of Philip's Teensy
 
 //Motor Encoder
