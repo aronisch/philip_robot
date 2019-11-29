@@ -10,8 +10,8 @@
 
 const double rpmConvert = 60000000 / (SPEED_CALCULATION_PERIOD * TICKS_PER_REV);
 
-QuadDecoder<1> Enc1;
-QuadDecoder<2> Enc2;
+QuadDecoder Enc1 = QuadDecoder(1);
+QuadDecoder Enc2 = QuadDecoder(2);
 
 Adafruit_VL53L0X lidar1 = Adafruit_VL53L0X();
 Adafruit_VL53L0X lidar2 = Adafruit_VL53L0X();

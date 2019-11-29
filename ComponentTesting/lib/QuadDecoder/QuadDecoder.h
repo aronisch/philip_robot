@@ -26,10 +26,10 @@ GPIO	PHASE	PAD	IOMUXREG	XBARPORT IOMUX	XBAR1-INPUT	XBAR1-OUTPUT	SELn	n
 #define XBARA1_SEL36 (IMXRT_XBARA1.offset048)
 
 //QuadDecoder class with N = 1 or 2
-template <int N>
 class QuadDecoder
 {
 private:
+    int N;
     int mode = 0;
     // 0 - Position Control Mode
     // 1 - Velocity Control Mode
@@ -45,23 +45,22 @@ private:
     int VCPR = 0;
 
 public:
-    QuadDecoder(int OpMode = 0);
+    QuadDecoder(int decNumber, int OpMode = 0);
     void begin(uint32_t CPR, uint32_t us = 100000);
     uint32_t getCount();
     uint32_t getDCount();
     double getVelocity();
 };
 
-template <int N>
-QuadDecoder<N>::QuadDecoder(int OpMode)
+QuadDecoder::QuadDecoder(int decNumber, int OpMode)
 {
+    N = decNumber;
     mode = OpMode;
     IOMUXC_INIT();
     XBAR_INIT();
 }
 
-template <int N>
-void QuadDecoder<N>::begin(uint32_t CPR, uint32_t us)
+void QuadDecoder::begin(uint32_t CPR, uint32_t us)
 {   
     VCPR = CPR;
     PTRIGGERus = us;
@@ -70,8 +69,7 @@ void QuadDecoder<N>::begin(uint32_t CPR, uint32_t us)
     
 }
 
-template <int N>
-uint32_t QuadDecoder<N>::getCount()
+uint32_t QuadDecoder::getCount()
 {
     // Want unheld position when in position mode but held position in velocity mode
     int N2 = (mode == 0 ? N + 4 : N);
@@ -98,8 +96,7 @@ uint32_t QuadDecoder<N>::getCount()
     }
 }
 
-template <int N>
-uint32_t QuadDecoder<N>::getDCount()
+uint32_t QuadDecoder::getDCount()
 {
     switch (N)
     {
@@ -116,16 +113,14 @@ uint32_t QuadDecoder<N>::getDCount()
     }
 }
 
-template <int N>
-double QuadDecoder<N>::getVelocity() // RPM
+double QuadDecoder::getVelocity() // RPM
 {
     if (mode == 0)
         return 0;
     return double(getDCount()/VCPR) * double(60000000.0 / PTRIGGERus);
 }
 
-template <int N>
-void QuadDecoder<N>::XBAR_CONNECT(unsigned int input, unsigned int output)
+void QuadDecoder::XBAR_CONNECT(unsigned int input, unsigned int output)
 {
     if (input >= 88)
         return;
@@ -144,8 +139,7 @@ void QuadDecoder<N>::XBAR_CONNECT(unsigned int input, unsigned int output)
     *xbar = val;
 }
 
-template <int N>
-void QuadDecoder<N>::XBAR_INIT()
+void QuadDecoder::XBAR_INIT()
 {
     CCM_CCGR2 |= CCM_CCGR2_XBAR1(CCM_CCGR_ON); // XBAR CLK ON
     switch (N)
@@ -163,8 +157,7 @@ void QuadDecoder<N>::XBAR_INIT()
     }
 }
 
-template <int N>
-void QuadDecoder<N>::setENC_CTRL(unsigned int value)
+void QuadDecoder::setENC_CTRL(unsigned int value)
 {
     uint16_t ENCN_CTRL = ENC1_CTRL + ((N - 1) * 0x4000);
     volatile uint16_t *enc1 = &ENCN_CTRL;
@@ -173,8 +166,7 @@ void QuadDecoder<N>::setENC_CTRL(unsigned int value)
     *enc1 = val;
 }
 
-template <int N>
-void QuadDecoder<N>::ENC_INIT(uint32_t CPR)
+void QuadDecoder::ENC_INIT(uint32_t CPR)
 {
     uint16_t LMOD = (CPR & 0x0000FFFF);
     uint16_t UMOD = (CPR & 0xFFFF0000) >> 16;
@@ -221,8 +213,7 @@ void QuadDecoder<N>::ENC_INIT(uint32_t CPR)
     }
 }
 
-template <int N>
-void QuadDecoder<N>::IOMUXC_INIT()
+void QuadDecoder::IOMUXC_INIT()
 {
     switch (N)
     {
@@ -243,8 +234,7 @@ void QuadDecoder<N>::IOMUXC_INIT()
     }
 }
 
-template <int N>
-void QuadDecoder<N>::PIT_INIT(uint32_t us)
+void QuadDecoder::PIT_INIT(uint32_t us)
 {
     CCM_CCGR1 |= CCM_CCGR1_PIT(CCM_CCGR_ON);
     PIT_MCR = 0x00; // Turn On Timer
