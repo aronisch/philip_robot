@@ -3,11 +3,14 @@
 #include "actuators/actuators.h"
 #include "MotorControl/Motor.h"
 #include "MotorControl/Odometry.h"
+#include "sensors/frontSensors.h"
 
 #define UPDATE_TIMER_PERIOD (10000)
 #define TICKS_PER_REVOLUTION (2249)
 #define WHEEL_RADIUS (30)
 #define AXLE_DISTANCE (260)
+
+FrontSensors frontUS = FrontSensors(US_TRIG_LEFT, US_ECHO_LEFT, US_TRIG_RIGHT, US_ECHO_RIGHT);
 
 IntervalTimer updateTimer;
 
@@ -30,6 +33,8 @@ void setup() {
   pinMode(MOTOR_ENABLE, OUTPUT);
   digitalWrite(MOTOR_ENABLE, HIGH);
 
+  frontUS.start();
+
   motorRight = new Motor(MOTOR_PWM_1, MOTOR_DIR_1);
   motorLeft = new Motor(MOTOR_PWM_2, MOTOR_DIR_2);
   odo = new Odometry(TICKS_PER_REVOLUTION, WHEEL_RADIUS, AXLE_DISTANCE, UPDATE_TIMER_PERIOD);
@@ -37,7 +42,7 @@ void setup() {
   updateTimer.begin(updateFunction, UPDATE_TIMER_PERIOD);
 
   Serial.begin(9600);
-  Serial.println("R Right / L Left / O Odometry / S Speed / P Pid Enable Disable / A and B Open Loop");
+  Serial.println("R Right / L Left / O Odometry / S Speed / P Pid Enable Disable / A and B Open Loop / U Ultrasonic");
 
 }
 
@@ -97,6 +102,13 @@ void loop() {
         Serial.print("PID :");
         Serial.println(pidEnabled);
         break;
+      }
+      case 'U':
+      {
+        frontUS.newMeasurement();
+        Serial.print("L : ");Serial.print(frontUS.getLeftDist());Serial.print("mm   ");
+        Serial.print("R : ");Serial.print(frontUS.getRightDist());Serial.print("mm   ");
+        Serial.println();
       }
     }
   }
