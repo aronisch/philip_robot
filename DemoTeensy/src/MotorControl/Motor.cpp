@@ -45,6 +45,9 @@ void MotorPID::speedControlLoop(double currentSpeedR, double currentSpeedL){
     double dTermR = (errorR - previousErrorR) / _controlLoopTimeInterval/1000000 * _Kd;
     double dTermL = (errorL - previousErrorL) / _controlLoopTimeInterval/1000000 * _Kd;
 
+    previousErrorR = errorR;
+    previousErrorL = errorL;
+
     double pwmSetPointR = pTermR + iTermR + dTermR;
     double pwmSetPointL = pTermL + iTermL + dTermL;
 
