@@ -103,7 +103,7 @@ while True:
                 break
             
        
-       
+        is_arrived = False 
         #start searching the marker
         while(True):
             # Capture frame-by-frame
@@ -130,14 +130,19 @@ while True:
                         print("Direction :", end="")
                         print(320-middlepoint[0])
                         #Drive the robot to the direction
-                        linear_pid_marker
-            
+                        ang_vel = angular_pid_marker.update(middlepoint[0]), MIDDLE_X)
+                        robot.set_velocities(200, ang_vel)
+
             #Make the robot slowly turn until it sees the necessary marker
-            robot.set_velocities(0, 0.5)
+            else:
+                robot.set_velocities(0, 0.5)
 
             # Display the resulting frame
             cv2.imshow('frame',gray)
             if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+            if is_arrived:
                 break
         
         video_capture.release()
