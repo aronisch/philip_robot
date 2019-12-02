@@ -5,6 +5,9 @@ import cv2
 import cv2.aruco as aruco
 from signal import signal, SIGINT, SIGABRT, SIGFPE
 from sys import exit
+import time
+from PID import *
+from teensy_controller import *
 
 def handler(signal_received, frame):
     # Handle any cleanup here
@@ -17,12 +20,30 @@ signal(SIGINT, handler)
 signal(SIGABRT, handler)
 signal(SIGFPE, handler)
 
+IMAGE_WIDTH = 640
+IMAGE_HEIGHT = 480
 
 video_capture = cv2.VideoCapture(0)
-video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_WIDTH)
+video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_HEIGHT)
+
+MIDDLE_X = IMAGE_WIDTH/2
 
 endOfLine = False
+
+angular_pid_line = PID(Kp = 0.005, Ki = 0.0025)
+linear_pid_line = PID(Kp = 2)
+
+angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
+linear_pid_marker = PID(Kp = 2)
+
+MAX_SPEED = 500
+
+SERIAL_PORT = 
+BAUDRATE = 9600
+
+#create the object to control the robot 
+robot = TeensyController(SERIAL_PORT, BAUDRATE)
 
 while True:
     if path.exists("launch"):
@@ -63,17 +84,27 @@ while True:
                     print("Deviation: ", end="")
                     print(320-cx)
                     #Control Motors with Deviation
+                    
+                    ang_vel = angular_pid_line.update(cx, MIDDLE_X)
+                    lin_vel = MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
+                    
+                    robot.set_velocities(lin_vel, ang_vel)
                 else:
                     print("End Of Line")
                     endOfLine = True
+                    robot.set_velocities(0, 0)
             else:
                 print("No Line")
+                robot.set_velocities(0, 1)
         
             #Display the resulting frame
             cv2.imshow('frame',crop_img)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             
+       
+       
+        #start searching the marker
         while(True):
             # Capture frame-by-frame
             ret, frame = video_capture.read()
@@ -99,9 +130,11 @@ while True:
                         print("Direction :", end="")
                         print(320-middlepoint[0])
                         #Drive the robot to the direction
+                        linear_pid_marker
             
             #Make the robot slowly turn until it sees the necessary marker
-            
+            robot.set_velocities(0, 0.5)
+
             # Display the resulting frame
             cv2.imshow('frame',gray)
             if cv2.waitKey(1) & 0xFF == ord('q'):
