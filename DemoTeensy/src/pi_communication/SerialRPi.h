@@ -14,7 +14,7 @@ private:
     PlateHolder *_plateHolder;
     FrontSensors *_frontSensors;
 public:
-    SerialRpi(HardwareSerial *serPort, DifferentialDrive *diffD, SimpleArm *arm, PlateHolder *plateH, FrontSensors *sensors):_serialPort(serPort), _diffDrive(diffD), _gripperArm(arm), _plateHolder(plateH), _frontSensors(sensors){};
+    SerialRPi(HardwareSerial *serPort, DifferentialDrive *diffD, SimpleArm *arm, PlateHolder *plateH, FrontSensors *sensors):_serialPort(serPort), _diffDrive(diffD), _gripperArm(arm), _plateHolder(plateH), _frontSensors(sensors){};
     void update();
 };
 

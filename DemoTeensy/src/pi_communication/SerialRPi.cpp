@@ -5,6 +5,7 @@ void SerialRPi::update(){
         switch(_serialPort->read()){
             //Velocities Settings
             case 'L':
+            {
                 int linearSpeed = _serialPort->parseInt();
                 int angularSpeed = 0;
                 if(_serialPort->available()){
@@ -14,9 +15,10 @@ void SerialRPi::update(){
                     }
                 }
                 break;
-
+            }
             //Plate holder position
             case 'P':
+            {
                 int cmd = _serialPort->read();
                 if(cmd == '0'){
                     _plateHolder->close();
@@ -24,9 +26,10 @@ void SerialRPi::update(){
                     _plateHolder->open();
                 }
                 break;
-
+            }
             //Gripper position
             case 'G':
+            {
                 int cmd = _serialPort->read();
                 if(cmd == '0'){
                     _gripperArm->close();
@@ -34,9 +37,10 @@ void SerialRPi::update(){
                     _gripperArm->open();
                 }
                 break;
-
+            }
             //Gripper arm position
             case 'R':
+            {
                 int cmd = _serialPort->read();
                 if(cmd == '0'){
                     _gripperArm->toFront();
@@ -44,11 +48,13 @@ void SerialRPi::update(){
                     _gripperArm->toPlate();
                 }
                 break;
-
+            }
             //Check if obstacle avoidance activated
             case 'O':
+            {
                 //
                 break;
+            }
         }
     }
 }

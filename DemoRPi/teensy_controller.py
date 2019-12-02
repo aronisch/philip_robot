@@ -8,7 +8,7 @@ class TeensyController:
         self.ser.close()
         
     def set_velocities(self, linear_vel, angular_vel):
-        vel_packet = "L" + linear_vel + "A" + angular_vel + "\n"
+        vel_packet = "L" + str(linear_vel) + "A" + str(angular_vel) + "\n"
         self.ser.write(vel_packet.encode('utf-8'))
         
     def close_plate_holder(self):
