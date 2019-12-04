@@ -31,7 +31,7 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 endOfLine = False
 
-angular_pid_line = PID(Kp = 0.15, Ki = 0.0002)
+angular_pid_line = PID(Kp = 0.15, Ki = 0.00002, windup = 45)
 #linear_pid_line = PID(Kp = 0.7)
 
 angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
@@ -125,7 +125,7 @@ while True:
                     
                     robot.set_velocities(lin_vel, ang_vel)
                     search_area.set_position(line_real_loc[0], line_real_loc[1])
-                    search_area.set_shape(80,80)
+                    search_area.set_shape(200,80)
                     
                 # else:
                 #     print("End Of Line")

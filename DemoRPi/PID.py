@@ -1,6 +1,6 @@
 import time 
 class PID:
-    def __init__(self, Kp = 0, Ki = 0 , Kd = 0):
+    def __init__(self, Kp = 0, Ki = 0 , Kd = 0, windup = None):
         self.Kp = Kp
         self.Ki = Ki
         self.Kd = Kd
@@ -11,6 +11,10 @@ class PID:
         self.last_update = time.monotonic()
 
         self.started = False
+        
+        self.use_windup = windup != None 
+        if (self.use_windup):
+            self.windup = windup
 
     def update(self, position, goal):
         error = goal - position
@@ -28,6 +32,10 @@ class PID:
         #Integral 
         self.integrator = self.integrator + error * delay
         cmd = cmd + self.integrator * self.Ki
+        
+        if (self.use_windup):
+            self.integrator  = min(self.windup/Ki, self.integrator)
+            self.integrator  = max(-self.windup/Ki, self.integrator)
 
         #Derivative
         cmd = cmd + (error - self.derivative)*self.Kd/delay 
