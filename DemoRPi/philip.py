@@ -31,7 +31,7 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 endOfLine = False
 
-angular_pid_line = PID(Kp = 0.3, Ki = 0.001)
+angular_pid_line = PID(Kp = 0.15, Ki = 0.0002)
 #linear_pid_line = PID(Kp = 0.7)
 
 angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
