@@ -31,13 +31,13 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 endOfLine = False
 
-angular_pid_line = PID(Kp = 0.005, Ki = 0.0025)
-linear_pid_line = PID(Kp = 2)
+angular_pid_line = PID(Kp = 0.3, Ki = 0.001)
+#linear_pid_line = PID(Kp = 0.7)
 
 angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
 linear_pid_marker = PID(Kp = 2)
 
-MAX_SPEED = 500
+MAX_SPEED = 200
 
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
@@ -68,7 +68,8 @@ while True:
             ret,thresh = cv2.threshold(blur,((np.amax(blur)-np.amin(blur))/2),255,cv2.THRESH_BINARY_INV)
             # Find the contours of the frame
             contours,hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
-        
+            lin_vel = 0
+            ang_vel = 0
             # Find the biggest contour (if detected)
             if len(contours) > 0:
                 c = max(contours, key=cv2.contourArea)
@@ -89,16 +90,16 @@ while True:
                     #Control Motors with Deviation
                     
                     ang_vel = angular_pid_line.update(cx, MIDDLE_X)
-                    lin_vel = MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
+                    lin_vel = 200#MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
                     
                     robot.set_velocities(lin_vel, ang_vel)
-                else:
-                    print("End Of Line")
-                    endOfLine = True
-                    robot.set_velocities(0, 0)
+                # else:
+                #     print("End Of Line")
+                #     endOfLine = True
+                #     robot.set_velocities(0, 0)
             else:
                 print("No Line")
-                robot.set_velocities(0, 1)
+                robot.set_velocities(-lin_vel/2, -ang_vel)
         
             #Display the resulting frame
             cv2.imshow('frame',crop_img)
