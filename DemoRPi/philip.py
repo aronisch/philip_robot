@@ -31,7 +31,7 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 endOfLine = False
 
-angular_pid_line = PID(Kp = 0.15, Ki = 0.00002, windup = 45)
+angular_pid_line = PID(Kp = 0.17, Ki = 0.00002, windup = 45)
 #linear_pid_line = PID(Kp = 0.7)
 
 angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
@@ -116,16 +116,17 @@ while True:
             
                     cv2.drawContours(crop_img, contours, -1, (0,255,0), 1)
 
-                    print("Deviation: ", end="")
-                    print(320-cx)
+                    
                     #Control Motors with Deviation
                     line_real_loc = search_area.get_real_coordinate(cx,cy)
+                    print("Deviation: ", end="")
+                    print(320-line_real_loc)
                     ang_vel = angular_pid_line.update(line_real_loc[0], MIDDLE_X)
                     lin_vel = 200#MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
                     
                     robot.set_velocities(lin_vel, ang_vel)
                     search_area.set_position(min(IMAGE_WIDTH-IMAGE_WIDTH/2,max(0+IMAGE_WIDTH/2,line_real_loc[0])), min(IMAGE_HEIGHT-IMAGE_HEIGHT/2,max(0+IMAGE_HEIGHT/2,line_real_loc[1])) )
-                    search_area.set_shape(200,80)
+                    search_area.set_shape(400,80)
                     
                 # else:
                 #     print("End Of Line")
