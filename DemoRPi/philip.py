@@ -39,7 +39,7 @@ linear_pid_marker = PID(Kp = 2)
 
 MAX_SPEED = 500
 
-SERIAL_PORT = 
+SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
 #create the object to control the robot 
@@ -52,7 +52,10 @@ while True:
  
             # Capture the frames
             ret, frame = video_capture.read()
-        
+            rows,cols = 480, 640
+            M = cv2.getRotationMatrix2D(((cols-1)/2.0,(rows-1)/2.0),180,1)
+            frame = cv2.warpAffine(frame,M,(cols,rows))
+            
             # Crop the image
             crop_img = frame[340:480, 0:640]
             # Convert to grayscale
@@ -108,6 +111,9 @@ while True:
         while(True):
             # Capture frame-by-frame
             ret, frame = video_capture.read()
+            rows,cols = 480, 640
+            M = cv2.getRotationMatrix2D(((cols-1)/2.0,(rows-1)/2.0),180,1)
+            frame = cv2.warpAffine(frame,M,(cols,rows))
             #print(frame.shape) #480x640
             # Our operations on the frame come here
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -130,7 +136,7 @@ while True:
                         print("Direction :", end="")
                         print(320-middlepoint[0])
                         #Drive the robot to the direction
-                        ang_vel = angular_pid_marker.update(middlepoint[0]), MIDDLE_X)
+                        ang_vel = angular_pid_marker.update(middlepoint[0], MIDDLE_X)
                         robot.set_velocities(200, ang_vel)
 
             #Make the robot slowly turn until it sees the necessary marker
@@ -138,9 +144,9 @@ while True:
                 robot.set_velocities(0, 0.5)
 
             # Display the resulting frame
-            cv2.imshow('frame',gray)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow('frame',gray)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
 
             if is_arrived:
                 break

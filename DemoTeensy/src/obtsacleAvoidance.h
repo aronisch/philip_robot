@@ -9,10 +9,11 @@
 #define ANGULAR_SPEED (3.14159f)
 
 #define STOPPING_TIME (200)
-#define TURNING_TIME (HALF_PI/ANGULAR_SPEEDf)
+#define TURNING_TIME (HALF_PI/ANGULAR_SPEED)
 
 #define AVOIDING_OBJECT_DISTANCE (300)
 
-void avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor);
+bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor);
+//void obstacleHere
 
 #endif 

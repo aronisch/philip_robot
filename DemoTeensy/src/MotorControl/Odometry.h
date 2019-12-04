@@ -5,8 +5,8 @@
 
 class Odometry {
 private:
-    QuadDecoder _decoderRight = QuadDecoder(1);
-    QuadDecoder _decoderLeft = QuadDecoder(2);
+    QuadDecoder _decoderRight = QuadDecoder(2);
+    QuadDecoder _decoderLeft = QuadDecoder(1);
 
     uint32_t _ticksPerRev;
     double _wheelRadius; //mm

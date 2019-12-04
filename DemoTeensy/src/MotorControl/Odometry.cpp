@@ -30,7 +30,7 @@ void Odometry::updateSpeedsAndPositions(){
     Serial.print(ticksDifferenceRight);
     Serial.print(" - Ticks Diff L");
     Serial.println(ticksDifferenceLeft);*/
-    double displacementRight = (double)(ticksDifferenceRight) * 2 * M_PI * _wheelRadius / _ticksPerRev;
+    double displacementRight = -(double)(ticksDifferenceRight) * 2 * M_PI * _wheelRadius / _ticksPerRev;
     double displacementLeft = (double)(ticksDifferenceLeft) * 2 * M_PI * _wheelRadius / _ticksPerRev;
 
     _previousTicksRight = currentTicksRight;

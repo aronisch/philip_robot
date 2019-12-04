@@ -11,7 +11,11 @@ void SerialRPi::update(){
                 if(_serialPort->available()){
                     if(_serialPort->read() == 'A'){
                         angularSpeed = _serialPort->parseInt();
-                        _diffDrive->setVelocities((double) linearSpeed, (double) angularSpeed);
+                        _diffDrive->setVelocities((double) linearSpeed, (double) angularSpeed*2*M_PI/360);
+                        Serial.print("Linear Speed:");
+                        Serial.print(linearSpeed);
+                        Serial.print("Angular Speed:");
+                        Serial.println(angularSpeed);
                     }
                 }
                 break;
@@ -22,8 +26,10 @@ void SerialRPi::update(){
                 int cmd = _serialPort->read();
                 if(cmd == '0'){
                     _plateHolder->close();
+                    Serial.println("Close Plate");
                 } else if(cmd == '1'){
                     _plateHolder->open();
+                    Serial.println("Open Plate");
                 }
                 break;
             }
@@ -33,8 +39,10 @@ void SerialRPi::update(){
                 int cmd = _serialPort->read();
                 if(cmd == '0'){
                     _gripperArm->close();
+                    Serial.println("Close Gripper");
                 } else if(cmd == '1'){
                     _gripperArm->open();
+                    Serial.println("Open Gripper");
                 }
                 break;
             }
@@ -44,8 +52,10 @@ void SerialRPi::update(){
                 int cmd = _serialPort->read();
                 if(cmd == '0'){
                     _gripperArm->toFront();
+                    Serial.println("Arm Front");
                 } else if(cmd == '1'){
                     _gripperArm->toPlate();
+                    Serial.println("Arm Plate");
                 }
                 break;
             }

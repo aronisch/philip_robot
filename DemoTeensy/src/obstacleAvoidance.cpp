@@ -6,7 +6,7 @@ bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor){
     static bool actionDone = false;
     static bool hasSeenHigh = false;
     
-    switch(state):
+    switch(state)
     {
         case STOP:
             if(!actionDone){
@@ -16,11 +16,11 @@ bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor){
             diffD.setVelocities(0.0, 0.0);
             actionDone = true;
             if ((millis() - lastcall) > STOPPING_TIME){
-                state = TURNING;
+                state = TURN_LEFT1;
                 odo.resetPosition();
                 actionDone = false;
             }
-            return false
+            return false;
             break;
         
         case TURN_LEFT1:
@@ -33,7 +33,7 @@ bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor){
                 state = MOVE_AWAY;
                 actionDone = false;
             }
-            return false
+            return false;
             break;
         
         case MOVE_AWAY:
@@ -44,16 +44,14 @@ bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor){
             }
             if(hasSeenHigh){
                 if(sensor.getDist() > AVOIDING_OBJECT_DISTANCE){
-                    state = TURN_RIGHT;
+                    state = TURN_RIGHT1;
                     actionDone = false;
                     hasSeenHigh = false;
                 }
             }
-                }
-            }
             diffD.setVelocities(0.0, ANGULAR_SPEED);
 
-            return false
+            return false;
         
         case TURN_RIGHT1:
             if(!actionDone){
@@ -65,7 +63,7 @@ bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor){
                 state = MOVE_FORWARD;
                 actionDone = false;
             }
-            return false
+            return false;
             break;
         
         case MOVE_FORWARD:
@@ -76,11 +74,11 @@ bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor){
             }
             if(hasSeenHigh){
                 if(sensor.getDist() > AVOIDING_OBJECT_DISTANCE){
-                    state = TURN_RIGHT;
+                    state = TURN_RIGHT2;
                     hasSeenHigh = false;
                 }
             }
-            return false
+            return false;
         
         case TURN_RIGHT2:
             if(!actionDone){
@@ -92,7 +90,7 @@ bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor){
                 state = RETURN;
                 actionDone = false;
             }
-            return false
+            return false;
             break;
 
         case RETURN:
@@ -101,7 +99,7 @@ bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor){
             if(odo.getPositionY() <= 0){
                 state = TURN_LEFT2;
             }
-            return false
+            return false;
             break;
         
         case TURN_LEFT2:
@@ -113,12 +111,14 @@ bool avoidingObstacle(DifferentialDrive &diffD, Odometry &odo, Lidar &sensor){
             if ((millis() - lastcall) > TURNING_TIME){
                 state = NOT_AVOIDING;
                 actionDone = false;
-                return true
+                return true;
             }
-            return false
+            return false;
             break;
-        case default:
+        default:
             return true;
             break;
     }
+
+    return true;
 }
