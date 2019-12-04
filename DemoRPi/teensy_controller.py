@@ -5,6 +5,7 @@ class TeensyController:
         self.ser = serial.Serial(serial_port, baud_rate)
     
     def __del__(self):
+        self.set_velocities(0,0)
         self.ser.close()
         
     def set_velocities(self, linear_vel, angular_vel):
