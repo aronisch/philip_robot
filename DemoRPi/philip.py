@@ -86,7 +86,7 @@ while True:
             M = cv2.getRotationMatrix2D(((cols-1)/2.0,(rows-1)/2.0),180,1)
             frame = cv2.warpAffine(frame,M,(cols,rows))
             
-            x_min, y_min, x_max, y_max = search_area.corners()
+            x_min, x_max, y_min, y_max = search_area.corners()
             print(search_area.corners())
             # Crop the image
             crop_img = frame[max(0,int(y_min)): min(IMAGE_HEIGHT,int(y_max)),max(int(x_min),0): min(IMAGE_WIDTH, int(x_max))]
