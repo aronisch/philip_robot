@@ -170,80 +170,52 @@ while True:
             # Color thresholding
             ret,thresh = cv2.threshold(blur,((np.amax(blur)-np.amin(blur))*3/4),255,cv2.THRESH_BINARY_INV)
             
-            nb_pixel = 0
-            sum=[0,0]
-            for i in range(len(thresh)):
-                for j in range(len(thresh[0])):
-                    if thresh[i,j]==255:
-                        sum[0]=sum[0]+i
-                        sum[1]=sum[1]+j
-                        nb_pixel = nb_pixel + 1
+            # Find the contours of the frame
+            contours,hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
             
-            if nb_pixel > 50:
-                
-                goal = [0,0]
-                goal[0] = sum[0]/len(nb_pixel)
-                goal[1] = sum[1]/len(nb_pixel)
-                
-                line_real_loc = search_area.get_real_coordinate(goal[0],goal[1])
-                
-                print("Deviation: ", end="")
-                print(MIDDLE_X-line_real_loc[0])
-                ang_vel = angular_pid_line.update(line_real_loc[0], MIDDLE_X)
-                lin_vel = 130#MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
-                
-                robot.set_velocities(lin_vel, ang_vel)
+            # Find the biggest contour (if detected)
+            if len(contours) > 0:
+                c = max(contours, key=cv2.contourArea)
+                contourValue = cv2.contourArea(c)
+                if(contourValue > 400):
+                    M = cv2.moments(thresh)
             
+                    cx = int(M['m10']/M['m00'])
+                    cy = int(M['m01']/M['m00'])
+            
+                    cv2.line(crop_img,(cx,0),(cx,720),(255,0,0),1)
+                    cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
+            
+                    
+                    cv2.drawContours(crop_img, [c], -1, (0,255,0), 1)
+                    # w,h = search_area.shape()
+                    # contourImg = np.zeros(shape=[h, w, 1], dtype=np.uint8)
+                    
+                    # cv2.drawContours(contourImg, [c], -1, 255, 1)
+
+                    # cv2.imshow('con',contourImg)
+                    # first_point = find_first_point(c)
+                    # furthest_point = find_furthest_point(contourImg, first_point, len(c)/2)
+
+                    
+                    #Control Motors with Deviation
+                    line_real_loc = search_area.get_real_coordinate(cx,cy)
+                    print("Deviation: ", end="")
+                    print(MIDDLE_X-line_real_loc[0])
+                    ang_vel = angular_pid_line.update(line_real_loc[0], MIDDLE_X)
+                    lin_vel = 130#MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
+                    
+                    robot.set_velocities(lin_vel, ang_vel)
+                    # search_area.set_position(min(IMAGE_WIDTH-search_area.width/2,max(0+search_area.width/2,line_real_loc[0])), min(IMAGE_HEIGHT-search_area.height/2,max(0+search_area.height/2,line_real_loc[1])) )
+                    # search_area.set_shape(400,80)
+                    
+                # else:
+                #     print("End Of Line")
+                #     endOfLine = True
+                #     robot.set_velocities(0, 0)
             else:
                 print("No Line")
-                robot.set_velocities(0, math.copysign(45,MIDDLE_X-line_real_loc[0]))
-            
-            # Find the contours of the frame
-            # contours,hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
-            
-            # # Find the biggest contour (if detected)
-            # if len(contours) > 0:
-            #     c = max(contours, key=cv2.contourArea)
-            #     contourValue = cv2.contourArea(c)
-            #     if(contourValue > 400):
-            #         M = cv2.moments(c)
-            
-            #         cx = int(M['m10']/M['m00'])
-            #         cy = int(M['m01']/M['m00'])
-            
-            #         cv2.line(crop_img,(cx,0),(cx,720),(255,0,0),1)
-            #         cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
-            
-                    
-            #         cv2.drawContours(crop_img, [c], -1, (0,255,0), 1)
-            #         w,h = search_area.shape()
-            #         contourImg = np.zeros(shape=[h, w, 1], dtype=np.uint8)
-                    
-            #         cv2.drawContours(contourImg, [c], -1, 255, 1)
-
-            #         # cv2.imshow('con',contourImg)
-            #         first_point = find_first_point(c)
-            #         furthest_point = find_furthest_point(contourImg, first_point, len(c)/2)
-
-                    
-            #         #Control Motors with Deviation
-            #         line_real_loc = search_area.get_real_coordinate(furthest_point[0],furthest_point[1])
-            #         print("Deviation: ", end="")
-            #         print(320-line_real_loc[0])
-            #         ang_vel = angular_pid_line.update(line_real_loc[0], MIDDLE_X)
-            #         lin_vel = 130#MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
-                    
-            #         robot.set_velocities(lin_vel, ang_vel)
-            #         # search_area.set_position(min(IMAGE_WIDTH-search_area.width/2,max(0+search_area.width/2,line_real_loc[0])), min(IMAGE_HEIGHT-search_area.height/2,max(0+search_area.height/2,line_real_loc[1])) )
-            #         # search_area.set_shape(400,80)
-                    
-            #     # else:
-            #     #     print("End Of Line")
-            #     #     endOfLine = True
-            #     #     robot.set_velocities(0, 0)
-            # else:
-            #     print("No Line")
-            #     robot.set_velocities(0, math.copysign(45,320-line_real_loc[0]))
+                robot.set_velocities(0, math.copysign(45,320-line_real_loc[0]))
         
             #Display the resulting frame
             # cv2.imshow('frame',crop_img)
