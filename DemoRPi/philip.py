@@ -44,6 +44,36 @@ BAUDRATE = 9600
 
 #create the object to control the robot 
 robot = TeensyController(SERIAL_PORT, BAUDRATE)
+lin_vel = 0
+ang_vel = 0
+
+class Area:
+    
+    def __init__(self, x, y, w, h):
+        self.height = h
+        self.width = w
+        self.x = x
+        self.y = y
+    
+    def set_postion(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def set_shape(self, w, h):
+        self.width = w
+        self.height = h
+    
+    def shape(self):
+        return self.w,self.h
+    
+    def corners(self):
+        return self.x-self.w/2, self.x+self.w/2, self.y-self.h/2, self.y+self.h/2
+    
+    def get_real_coordinate(self, x_loc, y_loc):
+        return self.x-self.w/2 + x_loc, self.y-self.h/2+ y_loc
+    
+    
+search_area = Area(IMAGE_WIDTH/2, IMAGE_HEIGHT-40,IMAGE_WIDTH, 80) 
 
 while True:
     if path.exists("launch"):
@@ -56,8 +86,9 @@ while True:
             M = cv2.getRotationMatrix2D(((cols-1)/2.0,(rows-1)/2.0),180,1)
             frame = cv2.warpAffine(frame,M,(cols,rows))
             
+            x_min, y_min, x_max, y_max = search_area.corners()
             # Crop the image
-            crop_img = frame[340:480, 0:640]
+            crop_img = frame[x_min: x_max, y_min: y_max]
             # Convert to grayscale
             gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
         
@@ -68,8 +99,7 @@ while True:
             ret,thresh = cv2.threshold(blur,((np.amax(blur)-np.amin(blur))/2),255,cv2.THRESH_BINARY_INV)
             # Find the contours of the frame
             contours,hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
-            lin_vel = 0
-            ang_vel = 0
+            
             # Find the biggest contour (if detected)
             if len(contours) > 0:
                 c = max(contours, key=cv2.contourArea)
@@ -88,23 +118,26 @@ while True:
                     print("Deviation: ", end="")
                     print(320-cx)
                     #Control Motors with Deviation
-                    
-                    ang_vel = angular_pid_line.update(cx, MIDDLE_X)
+                    line_real_loc = search_area.get_real_coordinate(cx,cy)
+                    ang_vel = angular_pid_line.update(line_real_loc[0], MIDDLE_X)
                     lin_vel = 200#MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
                     
                     robot.set_velocities(lin_vel, ang_vel)
+                    search_area.set_postion(line_real_loc[0], line_real_loc[1])
+                    search_area.set_shape(80,80)
+                    
                 # else:
                 #     print("End Of Line")
                 #     endOfLine = True
                 #     robot.set_velocities(0, 0)
             else:
                 print("No Line")
-                robot.set_velocities(-lin_vel/2, -ang_vel)
+                robot.set_velocities(-lin_vel/2, ang_vel)
         
             #Display the resulting frame
-            cv2.imshow('frame',crop_img)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow('frame',crop_img)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
             
        
         is_arrived = False 
