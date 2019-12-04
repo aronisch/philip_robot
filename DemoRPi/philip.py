@@ -55,7 +55,7 @@ class Area:
         self.x = x
         self.y = y
     
-    def set_postion(self, x, y):
+    def set_position(self, x, y):
         self.x = x
         self.y = y
     
@@ -88,7 +88,7 @@ while True:
             
             x_min, y_min, x_max, y_max = search_area.corners()
             # Crop the image
-            crop_img = frame[int(x_min): int(x_max), int(y_min): int(y_max)]
+            crop_img = frame[max(int(x_min),0): min(IMAGE_WIDTH, int(x_max)), max(0,int(y_min)): min(IMAGE_HEIGHT,int(y_max))]
             # Convert to grayscale
             gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
         
@@ -123,7 +123,7 @@ while True:
                     lin_vel = 200#MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
                     
                     robot.set_velocities(lin_vel, ang_vel)
-                    search_area.set_postion(line_real_loc[0], line_real_loc[1])
+                    search_area.set_position(line_real_loc[0], line_real_loc[1])
                     search_area.set_shape(80,80)
                     
                 # else:
