@@ -87,8 +87,9 @@ while True:
             frame = cv2.warpAffine(frame,M,(cols,rows))
             
             x_min, y_min, x_max, y_max = search_area.corners()
+            print(search_area.corners())
             # Crop the image
-            crop_img = frame[max(int(x_min),0): min(IMAGE_WIDTH, int(x_max)), max(0,int(y_min)): min(IMAGE_HEIGHT,int(y_max))]
+            crop_img = frame[max(0,int(y_min)): min(IMAGE_HEIGHT,int(y_max)),max(int(x_min),0): min(IMAGE_WIDTH, int(x_max))]
             # Convert to grayscale
             gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
         
