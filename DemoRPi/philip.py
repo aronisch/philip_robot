@@ -135,7 +135,7 @@ while True:
                 #     robot.set_velocities(0, 0)
             else:
                 print("No Line")
-                robot.set_velocities(0, math.copysign(45,ang_vel))
+                robot.set_velocities(0, math.copysign(45,320-line_real_loc[0]))
         
             #Display the resulting frame
             # cv2.imshow('frame',crop_img)
