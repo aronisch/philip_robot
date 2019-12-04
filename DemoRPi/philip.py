@@ -8,6 +8,7 @@ from sys import exit
 import time
 from PID import *
 from teensy_controller import *
+import math
 
 def handler(signal_received, frame):
     # Handle any cleanup here
@@ -134,7 +135,7 @@ while True:
                 #     robot.set_velocities(0, 0)
             else:
                 print("No Line")
-                robot.set_velocities(-lin_vel/2, ang_vel)
+                robot.set_velocities(0, math.copysign(45,ang_vel))
         
             #Display the resulting frame
             # cv2.imshow('frame',crop_img)
