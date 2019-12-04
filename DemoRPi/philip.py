@@ -64,13 +64,13 @@ class Area:
         self.height = h
     
     def shape(self):
-        return self.w,self.h
+        return self.width,self.height
     
     def corners(self):
-        return self.x-self.w/2, self.x+self.w/2, self.y-self.h/2, self.y+self.h/2
+        return self.x-self.width/2, self.x+self.width/2, self.y-self.height/2, self.y+self.height/2
     
     def get_real_coordinate(self, x_loc, y_loc):
-        return self.x-self.w/2 + x_loc, self.y-self.h/2+ y_loc
+        return self.x-self.width/2 + x_loc, self.y-self.height/2+ y_loc
     
     
 search_area = Area(IMAGE_WIDTH/2, IMAGE_HEIGHT-40,IMAGE_WIDTH, 80) 
@@ -88,7 +88,7 @@ while True:
             
             x_min, y_min, x_max, y_max = search_area.corners()
             # Crop the image
-            crop_img = frame[x_min: x_max, y_min: y_max]
+            crop_img = frame[int(x_min): int(x_max), int(y_min): int(y_max)]
             # Convert to grayscale
             gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
         
