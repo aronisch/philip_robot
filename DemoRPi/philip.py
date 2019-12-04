@@ -124,7 +124,7 @@ while True:
                     lin_vel = 200#MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
                     
                     robot.set_velocities(lin_vel, ang_vel)
-                    search_area.set_position(line_real_loc[0], line_real_loc[1])
+                    search_area.set_position(min(IMAGE_WIDTH-IMAGE_WIDTH/2,max(0+IMAGE_WIDTH/2,line_real_loc[0])), min(IMAGE_HEIGHT-IMAGE_HEIGHT/2,max(0+IMAGE_HEIGHT/2,line_real_loc[1])) )
                     search_area.set_shape(200,80)
                     
                 # else:

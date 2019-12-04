@@ -34,8 +34,8 @@ class PID:
         cmd = cmd + self.integrator * self.Ki
         
         if (self.use_windup):
-            self.integrator  = min(self.windup/Ki, self.integrator)
-            self.integrator  = max(-self.windup/Ki, self.integrator)
+            self.integrator  = min(self.windup/self.Ki, self.integrator)
+            self.integrator  = max(-self.windup/self.Ki, self.integrator)
 
         #Derivative
         cmd = cmd + (error - self.derivative)*self.Kd/delay 
