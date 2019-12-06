@@ -87,6 +87,7 @@ while True:
                         robot.set_velocities(lin_vel, ang_vel)
                         
                         if abs(corners[i][0][0][0]-corners[i][0][1][0]) > CLOSE_MARKER_WIDTH and ingredient_not_found:
+                            print("Ingredient Found --> Grabbing...")
                             robot.set_velocities(0,0)
                             robot.open_gripper()
                             robot.set_gripper_grabbing_position()
@@ -111,10 +112,9 @@ while True:
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
 
-            if is_arrived:
+            if ingredient_not_found:
                 break
     
-
-#Program End -> Cleanup
-video_capture.release()
-os.remove("launch")
+    #Program End -> Cleanup
+    video_capture.release()
+    os.remove("launch")
