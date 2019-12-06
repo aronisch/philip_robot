@@ -36,7 +36,7 @@ LOST_MARKER_ANGULAR_SPEED = 45
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
-angular_pid_marker = PID(Kp = 0.2, Ki = 0.00015)
+angular_pid_marker = PID(Kp = 0.2, Ki = 0.0002)
 linear_pid_marker = PID(Kp = 0.5)
 
 video_capture = cv2.VideoCapture(0)
@@ -62,14 +62,18 @@ def grabbingInstructions():
     robot.set_gripper_grabbing_position()
     time.sleep(1)
     robot.set_velocities(APPROACH_SPEED,0)
-    time.sleep(1.3)
+    time.sleep(1.5)
     robot.set_velocities(0,0)
     time.sleep(0.3)
     robot.close_gripper()
     time.sleep(1)
     robot.set_gripper_releasing_position()
-    time.sleep(1)
+    time.sleep(1)    
+    robot.set_velocities(-APPROACH_SPEED,0)
+    time.sleep(1.5)
     robot.set_gripper_grabbing_position()
+    time.sleep(0.5)
+    robot.set_velocities(0,0)
     #robot.set_velocities(-APPROACH_SPEED,0)
 
 def arucoDetection():
@@ -107,7 +111,7 @@ while True:
                         
                         #Drive the robot to the direction
                         ang_vel = angular_pid_marker.update(middlepoint[0], MIDDLE_X)
-                        lin_vel = 100# max(0,MAX_SPEED-abs(linear_pid_marker.update(middlepoint[0], MIDDLE_X)))
+                        lin_vel = 170# max(0,MAX_SPEED-abs(linear_pid_marker.update(middlepoint[0], MIDDLE_X)))
                         robot.open_gripper()
                         if(abs(middlepoint[0] - MIDDLE_X)) > 70:
                             lin_vel = 0
@@ -121,9 +125,7 @@ while True:
                         time.sleep(0.1)
                         robot.reset_odometry()
                         robot.set_velocities(0,0)
-                        
-@
-                            
+                       
 
             #Make the robot slowly turn until it sees the necessary marker
             else:
