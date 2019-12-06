@@ -87,6 +87,7 @@ while True:
                         robot.set_velocities(lin_vel, ang_vel)
                         
                         if abs(corners[i][0][0][0]-corners[i][0][1][0]) > CLOSE_MARKER_WIDTH and ingredient_not_found:
+                            cv2.imwrite('closeMarker.jpg', gray)
                             print("Ingredient Found --> Grabbing...")
                             robot.set_velocities(0,0)
                             robot.open_gripper()
@@ -116,9 +117,8 @@ while True:
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
 
-            if ingredient_not_found==False:
-                #Program End -> Cleanup
-                video_capture.release()
-                #os.remove("launch")
-                break
-os.remove("launch")
+    if ingredient_not_found==False:
+        #Program End -> Cleanup
+        video_capture.release()
+        os.remove("launch")
+        break        
