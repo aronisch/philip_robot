@@ -33,13 +33,14 @@ class SimpleArm
 { 
   private:
     //Arm's constants
-    static const uint8_t PLATE = 170;
-    static const uint8_t FRONT = 10; 
+    static const uint8_t FRONT = 175;
+    static const uint8_t PLATE = 10; 
     static const uint8_t MIDDLE = 90;
     
     //gripper's constants
-    static const uint8_t OPEN = 25;
-    static const uint8_t CLOSED = 110; 
+    static const uint8_t OPEN = 90;
+    static const uint8_t CLOSED = 55; 
+    static const uint8_t DEFAULT = 60;
 
     ServoAct _grip;
     ServoAct _rotat;

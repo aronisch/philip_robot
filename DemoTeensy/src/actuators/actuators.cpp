@@ -4,7 +4,7 @@
 
 //constructor
 ServoAct::ServoAct(uint8_t min, uint8_t max, uint8_t def) :     
-_maxPosition(min), _minPosition(max), _defaultPosition(def){
+_maxPosition(max), _minPosition(min), _defaultPosition(def){
     writeDefault();
 }
 
@@ -17,6 +17,7 @@ void ServoAct::write(uint8_t pos){
     else if(pos > _maxPosition){
         pos = _maxPosition;
     }
+    Serial.println(pos);
     Servo::write(pos);    
 }
 
@@ -26,8 +27,8 @@ void ServoAct::write(uint8_t pos){
 SimpleArm::SimpleArm(uint8_t gripperPin, uint8_t armPin){
 
     // create two servo devices (ServoAct(min, max, default))
-    _rotat = ServoAct(FRONT, PLATE, MIDDLE);
-    _grip = ServoAct(OPEN, CLOSED, CLOSED);
+    _rotat = ServoAct(PLATE, FRONT, MIDDLE);
+    _grip = ServoAct(CLOSED, OPEN, DEFAULT);
 
     _rotat.attach(armPin);
     _grip.attach(gripperPin);

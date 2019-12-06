@@ -36,8 +36,8 @@ LOST_MARKER_ANGULAR_SPEED = 30
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
-angular_pid_marker = PID(Kp = 0.02, Ki = 0.0002)
-linear_pid_marker = PID(Kp = 1)
+angular_pid_marker = PID(Kp = 0.03, Ki = 0.0002)
+linear_pid_marker = PID(Kp = 0.5)
 
 video_capture = cv2.VideoCapture(0)
 video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_WIDTH)
@@ -97,7 +97,11 @@ while True:
                             robot.set_velocities(0,0)
                             time.sleep(0.3)
                             robot.close_gripper()
-                            robot.set_velocities(-APPROACH_SPEED,0)
+                            time.sleep(0.5)
+                            robot.set_gripper_releasing_position()
+                            time.sleep(0.5)
+                            robot.set_gripper_grabbing_position()
+                            #robot.set_velocities(-APPROACH_SPEED,0)
                             ingredient_not_found = False
                             
 
@@ -115,5 +119,6 @@ while True:
             if ingredient_not_found==False:
                 #Program End -> Cleanup
                 video_capture.release()
-                os.remove("launch")
+                #os.remove("launch")
                 break
+os.remove("launch")
