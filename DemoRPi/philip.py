@@ -113,8 +113,8 @@ while True:
                     lin_vel = 130#MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
                     
                     robot.set_velocities(lin_vel, ang_vel)
-                    # search_area.set_position(min(IMAGE_WIDTH-search_area.width/2,max(0+search_area.width/2,line_real_loc[0])), min(IMAGE_HEIGHT-search_area.height/2,max(0+search_area.height/2,line_real_loc[1])) )
-                    # search_area.set_shape(400,80)
+                    search_area.set_position(min(IMAGE_WIDTH-search_area.width/2,max(0+search_area.width/2,line_real_loc[0])), min(IMAGE_HEIGHT-search_area.height/2,max(0+search_area.height/2,IMAGE_HEIGHT-40)) )
+                    search_area.set_shape(200,80)
                     robot.reset_odometry()
                     firstDirection = True
                 # else:
