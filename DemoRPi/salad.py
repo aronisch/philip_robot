@@ -27,11 +27,11 @@ IMAGE_HEIGHT = 480
 
 MIDDLE_X = IMAGE_WIDTH/2
 
-WRONG_DIRECTION_THRESHOLD = 165
+WRONG_DIRECTION_THRESHOLD = 90
 CLOSE_MARKER_WIDTH = 150
 MAX_SPEED = 130
 APPROACH_SPEED = 50
-LOST_MARKER_ANGULAR_SPEED = 30
+LOST_MARKER_ANGULAR_SPEED = 45
 
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
@@ -50,8 +50,10 @@ parameters =  aruco.DetectorParameters_create()
 
 is_arrived = False
 ingredient_not_found = True
+firstDirection = True
 
 stopCounter = 0
+middlepoint = [0,0]
 
 while True:
     if path.exists("launch") and ingredient_not_found:
@@ -87,6 +89,7 @@ while True:
                         ang_vel = angular_pid_marker.update(middlepoint[0], MIDDLE_X)
                         lin_vel = max(0,MAX_SPEED-abs(linear_pid_marker.update(middlepoint[0], MIDDLE_X)))
                         robot.set_velocities(lin_vel, ang_vel)
+                        robot.reset_odometry()
                         
                         if abs(corners[i][0][0][0]-corners[i][0][1][0]) > CLOSE_MARKER_WIDTH and ingredient_not_found:
                             cv2.imwrite('closeMarker.jpg', gray)
@@ -110,13 +113,24 @@ while True:
 
             #Make the robot slowly turn until it sees the necessary marker
             else:
-                if stopCounter:
-                    robot.set_velocities(0, LOST_MARKER_ANGULAR_SPEED)
-                    stopCounter = 0
+                if abs(robot.get_odometry()[2]) < WRONG_DIRECTION_THRESHOLD and firstDirection:
+                    if stopCounter:
+                        robot.set_velocities(0, math.copysign(LOST_MARKER_ANGULAR_SPEED,MIDDLE_X-middlepoint[0]))
+                        stopCounter = 0
+                    else:
+                        stopCounter = stopCounter + 1
+                        time.sleep(0.5)
+                        robot.set_velocities(0, 0)
                 else:
-                    stopCounter = stopCounter + 1
-                time.sleep(0.5)
-                robot.set_velocities(0, 0)
+                    firstDirection = False
+                    if stopCounter:
+                        robot.set_velocities(0, -math.copysign(LOST_MARKER_ANGULAR_SPEED,MIDDLE_X-middlepoint[0]))
+                        stopCounter = 0
+                    else:
+                        stopCounter = stopCounter + 1
+                        time.sleep(0.5)
+                        robot.set_velocities(0, 0)
+                
 
             # Display the resulting frame
             # cv2.imshow('frame',gray)
