@@ -35,3 +35,11 @@ class TeensyController:
         self.ser.write("O\n".encode('utf-8'))
         return self.read() == "T"
     
+    def get_odometry(self):
+        self.ser.write("D".encode('utf-8'))
+        x = int(self.ser.readline())
+        y = int(self.ser.readline())
+        theta = int(self.ser.readline())
+        
+    def reset_odometry(self):
+        self.ser.write("N".encode('utf-8'))

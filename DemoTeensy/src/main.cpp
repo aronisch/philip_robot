@@ -49,9 +49,9 @@ void setup() {
   odo = new Odometry(TICKS_PER_REVOLUTION, WHEEL_RADIUS, AXLE_DISTANCE, UPDATE_TIMER_PERIOD);
   motorControl = new MotorPID(motorLeft, motorRight, UPDATE_TIMER_PERIOD, 2.5, 1.2, 0.2, 2.25, 1.06, 0.2);
   diffDrive = new DifferentialDrive(motorControl, AXLE_DISTANCE);
-  
+
   Serial2.begin(9600);
-  rpi = new SerialRPi(&Serial2, diffDrive, &arm, &plateH, &frontUS);
+  rpi = new SerialRPi(&Serial2, diffDrive, &arm, &plateH, &frontUS, odo);
   updateTimer.begin(updateFunction, UPDATE_TIMER_PERIOD);
 
   Serial.begin(9600);

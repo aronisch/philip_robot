@@ -65,6 +65,24 @@ void SerialRPi::update(){
                 //
                 break;
             }
+
+            //Return Odometry
+            case 'D':
+            {
+                //_serialPort->print("X");
+                _serialPort->println((int)_odo->getPositionX());
+                //_serialPort->print(" Y");
+                _serialPort->println((int)_odo->getPositionY());
+                //_serialPort->print(" T");
+                _serialPort->println((int)(_odo->getPositionTheta()/M_PI*180));
+                //_serialPort->println();
+            }
+
+            //Reset Odometry
+            case 'N':
+            {
+                _odo->resetPosition();
+            }
         }
     }
 }
