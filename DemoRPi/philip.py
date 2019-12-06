@@ -116,6 +116,7 @@ while True:
                     # search_area.set_position(min(IMAGE_WIDTH-search_area.width/2,max(0+search_area.width/2,line_real_loc[0])), min(IMAGE_HEIGHT-search_area.height/2,max(0+search_area.height/2,line_real_loc[1])) )
                     # search_area.set_shape(400,80)
                     robot.reset_odometry()
+                    firstDirection = True
                 # else:
                 #     print("End Of Line")
                 #     endOfLine = True
