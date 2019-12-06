@@ -208,15 +208,18 @@ while True:
                     robot.set_velocities(lin_vel, ang_vel)
                     # search_area.set_position(min(IMAGE_WIDTH-search_area.width/2,max(0+search_area.width/2,line_real_loc[0])), min(IMAGE_HEIGHT-search_area.height/2,max(0+search_area.height/2,line_real_loc[1])) )
                     # search_area.set_shape(400,80)
-                    
+                    robot.reset_odometry()
                 # else:
                 #     print("End Of Line")
                 #     endOfLine = True
                 #     robot.set_velocities(0, 0)
             else:
                 print("No Line")
-                robot.set_velocities(0, math.copysign(45,320-line_real_loc[0]))
-        
+                if abs(robot.get_odometry()[2]) < 160:
+                    robot.set_velocities(0, math.copysign(45,MIDDLE_X-line_real_loc[0]))
+                else:
+                    robot.set_velocities(0, -math.copysign(45,MIDDLE_X-line_real_loc[0]))
+
             #Display the resulting frame
             # cv2.imshow('frame',crop_img)
             # if cv2.waitKey(1) & 0xFF == ord('q'):
