@@ -112,9 +112,8 @@ while True:
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
 
-            if ingredient_not_found:
+            if ingredient_not_found==False:
+                #Program End -> Cleanup
+                video_capture.release()
+                os.remove("launch")
                 break
-    
-    #Program End -> Cleanup
-    video_capture.release()
-    os.remove("launch")
