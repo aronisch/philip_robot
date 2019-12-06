@@ -27,6 +27,10 @@ while(True):
             if(ids[i]==6):
                 middlepoint = int((corners[i][0][0][0]+corners[i][0][1][0])/2)
                 cv2.line(gray,(middlepoint,0),(middlepoint,720),(255,0,0),1)
+                print(corners[i][0][0][0], end=" X1 \n")
+                print(corners[i][0][1][0], end=" X2 \n")
+                print(corners[i][0][2][0], end=" X3 \n")
+                print(corners[i][0][3][0], end=" X4 \n")
         
     # Display the resulting frame
     cv2.imshow('frame',gray)
