@@ -27,25 +27,27 @@ IMAGE_HEIGHT = 480
 SEARCH_AREA_HEIGHT = 50
 SEARCH_AREA_WIDTH = 200
 
-video_capture = cv2.VideoCapture(0)
-video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_WIDTH)
-video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_HEIGHT)
-
 MIDDLE_X = IMAGE_WIDTH/2
 
-endOfLine = False
+WRONG_DIRECTION_THRESHOLD = 165
 
-angular_pid_line = PID(Kp = 0.22, Ki = 0.00002, windup = 45)
-linear_pid_line = PID(Kp = 1.0)
-
-angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
-linear_pid_marker = PID(Kp = 2)
-
-MAX_SPEED = 160
+MAX_SPEED = 250
 LOST_LINE_ANGULAR_SPEED = 45
 
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
+
+video_capture = cv2.VideoCapture(0)
+video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_WIDTH)
+video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_HEIGHT)
+
+endOfLine = False
+
+angular_pid_line = PID(Kp = 0.27, Ki = 0.00002, windup = 45)
+linear_pid_line = PID(Kp = 1.0)
+
+angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
+linear_pid_marker = PID(Kp = 2)
 
 #create the object to control the robot 
 robot = TeensyController(SERIAL_PORT, BAUDRATE)
@@ -127,7 +129,7 @@ while True:
             else:
                 print("No Line")
                 print(robot.get_odometry())
-                if abs(robot.get_odometry()[2]) < 160 and firstDirection:
+                if abs(robot.get_odometry()[2]) < WRONG_DIRECTION_THRESHOLD and firstDirection:
                     robot.set_velocities(0, math.copysign(LOST_LINE_ANGULAR_SPEED,MIDDLE_X-line_real_loc[0]))
                 else:
                     firstDirection = False
