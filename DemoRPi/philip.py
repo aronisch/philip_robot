@@ -31,7 +31,7 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 WRONG_DIRECTION_THRESHOLD = 165
 
-MAX_SPEED = 300
+MAX_SPEED = 180
 LOST_LINE_ANGULAR_SPEED = 45
 
 SERIAL_PORT = "/dev/ttyAMA0"
@@ -44,7 +44,7 @@ video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_HEIGHT)
 endOfLine = False
 
 angular_pid_line = PID(Kp = 0.2, Ki = 0.00002, windup = 45)
-linear_pid_line = PID(Kp = 1.6)
+linear_pid_line = PID(Kp = 0.9)
 
 angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
 linear_pid_marker = PID(Kp = 2)
