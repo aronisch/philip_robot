@@ -24,6 +24,8 @@ signal(SIGFPE, handler)
 
 IMAGE_WIDTH = 640
 IMAGE_HEIGHT = 480
+SEARCH_AREA_HEIGHT = 50
+SEARCH_AREA_WIDTH = 200
 
 video_capture = cv2.VideoCapture(0)
 video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_WIDTH)
@@ -33,13 +35,14 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 endOfLine = False
 
-angular_pid_line = PID(Kp = 0.2, Ki = 0.00002, windup = 45)
+angular_pid_line = PID(Kp = 0.3, Ki = 0.00002, windup = 45)
 linear_pid_line = PID(Kp = 0.7)
 
 angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
 linear_pid_marker = PID(Kp = 2)
 
 MAX_SPEED = 200
+LOST_LINE_ANGULAR_SPEED = 45
 
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
@@ -49,7 +52,7 @@ robot = TeensyController(SERIAL_PORT, BAUDRATE)
 lin_vel = 0
 ang_vel = 0
     
-search_area = Area(IMAGE_WIDTH/2, IMAGE_HEIGHT-40,IMAGE_WIDTH, 80) 
+search_area = Area(IMAGE_WIDTH/2, IMAGE_HEIGHT-SEARCH_AREA_HEIGHT/2,IMAGE_WIDTH, SEARCH_AREA_HEIGHT) 
 
 firstDirection = True
 
@@ -110,11 +113,11 @@ while True:
                     print("Deviation: ", end="")
                     print(MIDDLE_X-line_real_loc[0])
                     ang_vel = angular_pid_line.update(line_real_loc[0], MIDDLE_X)
-                    lin_vel = MAX_SPEED - linear_pid_line.update(cx, MIDDLE_X)
+                    lin_vel = MAX_SPEED - linear_pid_line.update(line_real_loc[0], MIDDLE_X)
                     
                     robot.set_velocities(lin_vel, ang_vel)
                     search_area.set_position(min(IMAGE_WIDTH-search_area.width/2,max(0+search_area.width/2,line_real_loc[0])), min(IMAGE_HEIGHT-search_area.height/2,max(0+search_area.height/2,IMAGE_HEIGHT-40)) )
-                    search_area.set_shape(200,80)
+                    search_area.set_shape(SEARCH_AREA_WIDTH,SEARCH_AREA_HEIGHT)
                     robot.reset_odometry()
                     firstDirection = True
                 # else:
@@ -125,10 +128,10 @@ while True:
                 print("No Line")
                 print(robot.get_odometry())
                 if abs(robot.get_odometry()[2]) < 160 and firstDirection:
-                    robot.set_velocities(0, math.copysign(70,MIDDLE_X-line_real_loc[0]))
+                    robot.set_velocities(0, math.copysign(LOST_LINE_ANGULAR_SPEED,MIDDLE_X-line_real_loc[0]))
                 else:
                     firstDirection = False
-                    robot.set_velocities(0, -math.copysign(70,MIDDLE_X-line_real_loc[0]))
+                    robot.set_velocities(0, -math.copysign(LOST_LINE_ANGULAR_SPEED,MIDDLE_X-line_real_loc[0]))
 
             #Display the resulting frame
             # cv2.imshow('frame',crop_img)
