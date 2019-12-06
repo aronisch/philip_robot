@@ -122,6 +122,7 @@ while True:
 
             #Make the robot slowly turn until it sees the necessary marker
             else:
+                robot.close_gripper()
                 if abs(robot.get_odometry()[2]) < WRONG_DIRECTION_THRESHOLD and firstDirection:
                     if stopCounter > 1:
                         robot.set_velocities(0, math.copysign(LOST_MARKER_ANGULAR_SPEED,MIDDLE_X-middlepoint[0]))
