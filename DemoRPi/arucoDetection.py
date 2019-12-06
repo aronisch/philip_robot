@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import cv2.aruco as aruco
+import time
  
  
 cap = cv2.VideoCapture(0)
@@ -31,11 +32,12 @@ while(True):
                 print(corners[i][0][1][0], end=" X2 \n")
                 print(corners[i][0][2][0], end=" X3 \n")
                 print(corners[i][0][3][0], end=" X4 \n")
+                print(time.monotonic())
         
     # Display the resulting frame
-    cv2.imshow('frame',gray)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # cv2.imshow('frame',gray)
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
  
 cap.release()
-cv2.destroyAllWindows()
+#cv2.destroyAllWindows()
