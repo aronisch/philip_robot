@@ -36,7 +36,7 @@ LOST_MARKER_ANGULAR_SPEED = 45
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
-angular_pid_marker = PID(Kp = 0.17, Ki = 0.00005)
+angular_pid_marker = PID(Kp = 0.17, Ki = 0.0001)
 linear_pid_marker = PID(Kp = 0.5)
 
 video_capture = cv2.VideoCapture(0)
@@ -109,7 +109,7 @@ while True:
                         ang_vel = angular_pid_marker.update(middlepoint[0], MIDDLE_X)
                         lin_vel = 100# max(0,MAX_SPEED-abs(linear_pid_marker.update(middlepoint[0], MIDDLE_X)))
                         robot.open_gripper()
-                        if(abs(middlepoint[0] - MIDDLE_X)) > 50:
+                        if(abs(middlepoint[0] - MIDDLE_X)) > 70:
                             lin_vel = 0
                         robot.set_velocities(lin_vel, ang_vel)
                         time.sleep(0.1)
