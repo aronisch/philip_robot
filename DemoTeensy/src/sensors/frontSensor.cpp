@@ -4,34 +4,18 @@
 
 //constructor
 FrontSensors::FrontSensors(uint8_t leftTrigPin, uint8_t leftEchoPin, uint8_t rightTrigPin, int8_t rightEchoPin){
-    _flSensors.attach(leftTrigPin, leftEchoPin);
-    _frSensors.attach(rightTrigPin, rightEchoPin);
-
+    _flSensors = UltrasonicSensor(leftEchoPin, leftTrigPin);
+    _frSensors = UltrasonicSensor(rightEchoPin, rightTrigPin);
+    left_right = false;
 }
-void FrontSensors::newMeasurement(){
-    static bool leftRight = true;
-    _flSensors.update();
-    _frSensors.update();
-    Serial.println(_frSensors.getReady());
-    if (_flSensors.getReady()){
-        _flSensors.trig();
+
+int getDist(){
+    if(left_right){
+        left_right = false;
+        return _flSensors.getDist();
     }
-    if(_frSensors.getReady()){
-      _frSensors.trig();
-      leftRight = true;
+    else{
+        left_right = true;
+        return _frSensors.getDist();
     }
-}
-
-uint16_t FrontSensors::getLeftDist(){
-    return _flSensors.getMesure();
-}
-
-uint16_t FrontSensors::getRightDist(){
-    return _frSensors.getMesure();
-}
-
-void FrontSensors::start(){
-    
-    _flSensors.trig();
-    _frSensors.trig();
 }
