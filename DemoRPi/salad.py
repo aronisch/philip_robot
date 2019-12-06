@@ -36,7 +36,7 @@ LOST_MARKER_ANGULAR_SPEED = 45
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
-angular_pid_marker = PID(Kp = 0.17, Ki = 0.0001)
+angular_pid_marker = PID(Kp = 0.2, Ki = 0.0001)
 linear_pid_marker = PID(Kp = 0.5)
 
 video_capture = cv2.VideoCapture(0)
@@ -62,7 +62,7 @@ def grabbingInstructions():
     robot.set_gripper_grabbing_position()
     time.sleep(1)
     robot.set_velocities(APPROACH_SPEED,0)
-    time.sleep(2)
+    time.sleep(1.3)
     robot.set_velocities(0,0)
     time.sleep(0.3)
     robot.close_gripper()
@@ -111,15 +111,18 @@ while True:
                         robot.open_gripper()
                         if(abs(middlepoint[0] - MIDDLE_X)) > 70:
                             lin_vel = 0
+                        else:    
+                            if abs(corners[i][0][0][0]-corners[i][0][1][0]) > CLOSE_MARKER_WIDTH and ingredient_not_found:
+                                cv2.imwrite('closeMarker.jpg', gray)
+                                grabbingInstructions()
+                                ingredient_not_found = False
+                            
                         robot.set_velocities(lin_vel, ang_vel)
                         time.sleep(0.1)
                         robot.reset_odometry()
                         robot.set_velocities(0,0)
                         
-                        if abs(corners[i][0][0][0]-corners[i][0][1][0]) > CLOSE_MARKER_WIDTH and ingredient_not_found:
-                            cv2.imwrite('closeMarker.jpg', gray)
-                            grabbingInstructions()
-                            ingredient_not_found = False
+
                             
 
             #Make the robot slowly turn until it sees the necessary marker
