@@ -55,25 +55,43 @@ firstDirection = True
 stopCounter = 0
 middlepoint = [0,0]
 
+def grabbingInstructions():
+    print("Ingredient Found --> Grabbing...")
+    robot.set_velocities(0,0)
+    robot.open_gripper()
+    robot.set_gripper_grabbing_position()
+    time.sleep(0.5)
+    robot.set_velocities(APPROACH_SPEED,0)
+    time.sleep(0.5)
+    robot.set_velocities(0,0)
+    time.sleep(0.3)
+    robot.close_gripper()
+    time.sleep(0.5)
+    robot.set_gripper_releasing_position()
+    time.sleep(0.5)
+    robot.set_gripper_grabbing_position()
+    #robot.set_velocities(-APPROACH_SPEED,0)
+
+def arucoDetection():
+    # Capture frame-by-frame
+    ret, frame = video_capture.read()
+    rows,cols = IMAGE_HEIGHT, IMAGE_WIDTH
+    M = cv2.getRotationMatrix2D(((cols-1)/2.0,(rows-1)/2.0),180,1)
+    frame = cv2.warpAffine(frame,M,(cols,rows))
+    #print(frame.shape) #480x640
+    # Our operations on the frame come here
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    #lists of ids and the corners beloning to each id
+    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
+    #print(corners)
+    gray = aruco.drawDetectedMarkers(gray, corners)
+    return gray, corners, ids
+
 while True:
     if path.exists("launch") and ingredient_not_found:
         print("Salad Launched")
         while ingredient_not_found:
-            # Capture frame-by-frame
-            ret, frame = video_capture.read()
-            rows,cols = IMAGE_HEIGHT, IMAGE_WIDTH
-            M = cv2.getRotationMatrix2D(((cols-1)/2.0,(rows-1)/2.0),180,1)
-            frame = cv2.warpAffine(frame,M,(cols,rows))
-            #print(frame.shape) #480x640
-            # Our operations on the frame come here
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            
-            
-            #lists of ids and the corners beloning to each id
-            corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
-            #print(corners)
-        
-            gray = aruco.drawDetectedMarkers(gray, corners)
+            gray, corners, ids = arucoDetection()
             
             if len(corners):
                 #print(corners)
@@ -93,43 +111,29 @@ while True:
                         
                         if abs(corners[i][0][0][0]-corners[i][0][1][0]) > CLOSE_MARKER_WIDTH and ingredient_not_found:
                             cv2.imwrite('closeMarker.jpg', gray)
-                            print("Ingredient Found --> Grabbing...")
-                            robot.set_velocities(0,0)
-                            robot.open_gripper()
-                            robot.set_gripper_grabbing_position()
-                            time.sleep(0.5)
-                            robot.set_velocities(APPROACH_SPEED,0)
-                            time.sleep(0.5)
-                            robot.set_velocities(0,0)
-                            time.sleep(0.3)
-                            robot.close_gripper()
-                            time.sleep(0.5)
-                            robot.set_gripper_releasing_position()
-                            time.sleep(0.5)
-                            robot.set_gripper_grabbing_position()
-                            #robot.set_velocities(-APPROACH_SPEED,0)
+                            grabbingInstructions()
                             ingredient_not_found = False
                             
 
             #Make the robot slowly turn until it sees the necessary marker
             else:
                 if abs(robot.get_odometry()[2]) < WRONG_DIRECTION_THRESHOLD and firstDirection:
-                    if stopCounter:
+                    if stopCounter > 2:
                         robot.set_velocities(0, math.copysign(LOST_MARKER_ANGULAR_SPEED,MIDDLE_X-middlepoint[0]))
                         stopCounter = 0
                     else:
                         stopCounter = stopCounter + 1
-                        time.sleep(0.5)
                         robot.set_velocities(0, 0)
+                    time.sleep(0.5)
                 else:
                     firstDirection = False
-                    if stopCounter:
+                    if stopCounter > 2:
                         robot.set_velocities(0, -math.copysign(LOST_MARKER_ANGULAR_SPEED,MIDDLE_X-middlepoint[0]))
                         stopCounter = 0
                     else:
                         stopCounter = stopCounter + 1
-                        time.sleep(0.5)
                         robot.set_velocities(0, 0)
+                    time.sleep(0.5)
                 
 
             # Display the resulting frame
