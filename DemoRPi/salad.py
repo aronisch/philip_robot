@@ -29,15 +29,15 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 WRONG_DIRECTION_THRESHOLD = 165
 CLOSE_MARKER_WIDTH = 250
-MAX_SPEED = 180
+MAX_SPEED = 130
 APPROACH_SPEED = 50
 LOST_MARKER_ANGULAR_SPEED = 45
 
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
-angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
-linear_pid_marker = PID(Kp = 2)
+angular_pid_marker = PID(Kp = 0.02, Ki = 0.0002)
+linear_pid_marker = PID(Kp = 1)
 
 video_capture = cv2.VideoCapture(0)
 video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_WIDTH)
@@ -82,7 +82,8 @@ while True:
                     
                     #Drive the robot to the direction
                     ang_vel = angular_pid_marker.update(middlepoint[0], MIDDLE_X)
-                    robot.set_velocities(MAX_SPEED, ang_vel)
+                    lin_vel = MAX_SPEED-abs(linear_pid_marker.update(middlepoint[0], MIDDLE_X))
+                    robot.set_velocities(lin_vel, ang_vel)
                     
                     if abs(corners[i][0][0][0]-corners[i][0][1][0]) > CLOSE_MARKER_WIDTH and ingredient_not_found:
                         robot.set_velocities(0,0)
