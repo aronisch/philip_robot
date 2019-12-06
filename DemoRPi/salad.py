@@ -42,6 +42,7 @@ linear_pid_marker = PID(Kp = 0.5)
 video_capture = cv2.VideoCapture(0)
 video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_WIDTH)
 video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_HEIGHT)
+video_capture.set(cv2.CAP_PROP_EXPOSURE, -8)
 
 robot = TeensyController(SERIAL_PORT, BAUDRATE)
 
