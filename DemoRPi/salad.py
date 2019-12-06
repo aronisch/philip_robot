@@ -106,7 +106,8 @@ while True:
                         #Drive the robot to the direction
                         ang_vel = angular_pid_marker.update(middlepoint[0], MIDDLE_X)
                         lin_vel = max(0,MAX_SPEED-abs(linear_pid_marker.update(middlepoint[0], MIDDLE_X)))
-                        robot.set_velocities(lin_vel, -ang_vel)
+                        robot.open_gripper()
+                        robot.set_velocities(lin_vel, ang_vel)
                         time.sleep(0.5)
                         robot.reset_odometry()
                         robot.set_velocities(0,0)
