@@ -97,6 +97,8 @@ while True:
                 #print(corners)
                 for i in range(len(corners)):
                     if(ids[i]==6):
+                        robot.set_velocities(0, 0)
+                        time.sleep(0.5)
                         middlepoint = [int((corners[i][0][0][0]+corners[i][0][1][0]+corners[i][0][2][0]+corners[i][0][3][0])/4),
                                         int((corners[i][0][0][1]+corners[i][0][1][1]+corners[i][0][2][1]+corners[i][0][3][1])/4)]
                         cv2.line(gray,(middlepoint[0],0),(middlepoint[0],720),(255,0,0),1)
@@ -108,7 +110,7 @@ while True:
                         lin_vel = max(0,MAX_SPEED-abs(linear_pid_marker.update(middlepoint[0], MIDDLE_X)))
                         robot.open_gripper()
                         robot.set_velocities(lin_vel, ang_vel)
-                        time.sleep(0.5)
+                        time.sleep(0.1)
                         robot.reset_odometry()
                         robot.set_velocities(0,0)
                         
@@ -121,7 +123,7 @@ while True:
             #Make the robot slowly turn until it sees the necessary marker
             else:
                 if abs(robot.get_odometry()[2]) < WRONG_DIRECTION_THRESHOLD and firstDirection:
-                    if stopCounter > 2:
+                    if stopCounter > 1:
                         robot.set_velocities(0, math.copysign(LOST_MARKER_ANGULAR_SPEED,MIDDLE_X-middlepoint[0]))
                         stopCounter = 0
                     else:
@@ -130,7 +132,7 @@ while True:
                     time.sleep(0.5)
                 else:
                     firstDirection = False
-                    if stopCounter > 2:
+                    if stopCounter > 1:
                         robot.set_velocities(0, -math.copysign(LOST_MARKER_ANGULAR_SPEED,MIDDLE_X-middlepoint[0]))
                         stopCounter = 0
                     else:
