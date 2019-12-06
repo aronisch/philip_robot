@@ -51,6 +51,8 @@ ang_vel = 0
     
 search_area = Area(IMAGE_WIDTH/2, IMAGE_HEIGHT-40,IMAGE_WIDTH, 80) 
 
+firstDirection = True
+
 while True:
     if path.exists("launch"):
         print("Launched")
@@ -121,9 +123,10 @@ while True:
             else:
                 print("No Line")
                 print(robot.get_odometry())
-                if abs(robot.get_odometry()[2]) < 160:
+                if abs(robot.get_odometry()[2]) < 160 and firstDirection:
                     robot.set_velocities(0, math.copysign(45,MIDDLE_X-line_real_loc[0]))
                 else:
+                    firstDirection = False
                     robot.set_velocities(0, -math.copysign(45,MIDDLE_X-line_real_loc[0]))
 
             #Display the resulting frame
