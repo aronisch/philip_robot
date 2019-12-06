@@ -36,7 +36,7 @@ LOST_MARKER_ANGULAR_SPEED = 45
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
-angular_pid_marker = PID(Kp = 0.17, Ki = 0.001)
+angular_pid_marker = PID(Kp = 0.17, Ki = 0.0001)
 linear_pid_marker = PID(Kp = 0.5)
 
 video_capture = cv2.VideoCapture(0)
