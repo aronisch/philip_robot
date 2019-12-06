@@ -31,6 +31,9 @@ PlateHolder plateH = PlateHolder(SERVO_PLATE);
 bool odoPrint = false;
 bool speedPrint = false;
 bool pidEnabled = false;
+bool plateHolderPos = false;
+bool gripperPos = false;
+bool armPos = false;
 
 void updateFunction(){
   odo->updateSpeedsAndPositions();
@@ -131,6 +134,7 @@ void componentTesting(void){
         Serial.print("L : ");Serial.print(frontUS.getLeftDist());Serial.print("mm   ");
         Serial.print("R : ");Serial.print(frontUS.getRightDist());Serial.print("mm   ");
         Serial.println();
+        break;
       }
       case 'F':
       {
@@ -162,6 +166,7 @@ void componentTesting(void){
         Serial.print(odo->getPositionY());
         Serial.print(" - Theta: ");
         Serial.println(odo->getPositionTheta());
+        break;
       }
       case 'T':
       {
@@ -193,6 +198,43 @@ void componentTesting(void){
         Serial.print(odo->getPositionY());
         Serial.print(" - Theta: ");
         Serial.println(odo->getPositionTheta());
+        break;
+      }
+      case 'G':
+      {
+        gripperPos = !gripperPos;
+        if(gripperPos){
+          Serial.println("Gripper closed");
+          arm.close();
+        } else {
+          Serial.println("Gripper open");
+          arm.open();
+        }
+        break;
+      }
+      case 'X':
+      {
+        armPos = !armPos;
+        if(armPos){
+          Serial.println("Arm Front");
+          arm.toFront();
+        } else {
+          Serial.println("Arm Plate");
+          arm.toPlate();
+        }
+        break;
+      }
+      case 'K':
+      {
+        plateHolderPos = !plateHolderPos;
+        if(plateHolderPos){
+          Serial.println("PlateH closed");
+          plateH.close();
+        } else {
+          Serial.println("PlateH open");
+          plateH.open();
+        }
+        break;
       }
     }
   }

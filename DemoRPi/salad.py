@@ -97,7 +97,9 @@ while True:
                             robot.set_velocities(0,0)
                             time.sleep(0.3)
                             robot.close_gripper()
-                            robot.set_velocities(-APPROACH_SPEED,0)
+                            time.sleep(0.5)
+                            robot.set_gripper_releasing_position()
+                            #robot.set_velocities(-APPROACH_SPEED,0)
                             ingredient_not_found = False
                             
 
