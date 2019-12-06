@@ -31,7 +31,7 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 WRONG_DIRECTION_THRESHOLD = 165
 
-MAX_SPEED = 250
+MAX_SPEED = 300
 LOST_LINE_ANGULAR_SPEED = 45
 
 SERIAL_PORT = "/dev/ttyAMA0"
@@ -43,8 +43,8 @@ video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_HEIGHT)
 
 endOfLine = False
 
-angular_pid_line = PID(Kp = 0.27, Ki = 0.00002, windup = 45)
-linear_pid_line = PID(Kp = 1.0)
+angular_pid_line = PID(Kp = 0.2, Ki = 0.00002, windup = 45)
+linear_pid_line = PID(Kp = 1.6)
 
 angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
 linear_pid_marker = PID(Kp = 2)
@@ -53,7 +53,9 @@ linear_pid_marker = PID(Kp = 2)
 robot = TeensyController(SERIAL_PORT, BAUDRATE)
 lin_vel = 0
 ang_vel = 0
-    
+
+line_real_loc = [0,0]    
+
 search_area = Area(IMAGE_WIDTH/2, IMAGE_HEIGHT-SEARCH_AREA_HEIGHT/2,IMAGE_WIDTH, SEARCH_AREA_HEIGHT) 
 
 firstDirection = True
