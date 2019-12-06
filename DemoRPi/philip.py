@@ -35,13 +35,13 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 endOfLine = False
 
-angular_pid_line = PID(Kp = 0.3, Ki = 0.00002, windup = 45)
-linear_pid_line = PID(Kp = 0.7)
+angular_pid_line = PID(Kp = 0.22, Ki = 0.00002, windup = 45)
+linear_pid_line = PID(Kp = 1.0)
 
 angular_pid_marker = PID(Kp = 0.05, Ki = 0.025)
 linear_pid_marker = PID(Kp = 2)
 
-MAX_SPEED = 200
+MAX_SPEED = 160
 LOST_LINE_ANGULAR_SPEED = 45
 
 SERIAL_PORT = "/dev/ttyAMA0"
@@ -113,7 +113,7 @@ while True:
                     print("Deviation: ", end="")
                     print(MIDDLE_X-line_real_loc[0])
                     ang_vel = angular_pid_line.update(line_real_loc[0], MIDDLE_X)
-                    lin_vel = MAX_SPEED - linear_pid_line.update(line_real_loc[0], MIDDLE_X)
+                    lin_vel = MAX_SPEED - abs(linear_pid_line.update(line_real_loc[0], MIDDLE_X))
                     
                     robot.set_velocities(lin_vel, ang_vel)
                     search_area.set_position(min(IMAGE_WIDTH-search_area.width/2,max(0+search_area.width/2,line_real_loc[0])), min(IMAGE_HEIGHT-search_area.height/2,max(0+search_area.height/2,IMAGE_HEIGHT-40)) )
