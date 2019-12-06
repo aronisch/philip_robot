@@ -130,7 +130,7 @@ while True:
                     else:
                         stopCounter = stopCounter + 1
                         robot.set_velocities(0, 0)
-                    time.sleep(0.5)
+                    time.sleep(0.1)
                 else:
                     firstDirection = False
                     if stopCounter > 1:
@@ -139,7 +139,7 @@ while True:
                     else:
                         stopCounter = stopCounter + 1
                         robot.set_velocities(0, 0)
-                    time.sleep(0.5)
+                    time.sleep(0.1)
                 
 
             # Display the resulting frame
