@@ -49,7 +49,7 @@ robot = TeensyController(SERIAL_PORT, BAUDRATE)
 lin_vel = 0
 ang_vel = 0
     
-search_area = Area(IMAGE_WIDTH/2, IMAGE_HEIGHT-80,IMAGE_WIDTH, 160) 
+search_area = Area(IMAGE_WIDTH/2, IMAGE_HEIGHT-40,IMAGE_WIDTH, 80) 
 
 while True:
     if path.exists("launch"):
