@@ -29,7 +29,7 @@ MIDDLE_X = IMAGE_WIDTH/2
 
 WRONG_DIRECTION_THRESHOLD = 90
 CLOSE_MARKER_WIDTH = 150
-MAX_SPEED = 130
+MAX_SPEED = 0
 APPROACH_SPEED = 50
 LOST_MARKER_ANGULAR_SPEED = 45
 
@@ -106,8 +106,10 @@ while True:
                         #Drive the robot to the direction
                         ang_vel = angular_pid_marker.update(middlepoint[0], MIDDLE_X)
                         lin_vel = max(0,MAX_SPEED-abs(linear_pid_marker.update(middlepoint[0], MIDDLE_X)))
-                        robot.set_velocities(lin_vel, ang_vel)
+                        robot.set_velocities(lin_vel, -ang_vel)
+                        time.sleep(0.5)
                         robot.reset_odometry()
+                        robot.set_velocities(0,0)
                         
                         if abs(corners[i][0][0][0]-corners[i][0][1][0]) > CLOSE_MARKER_WIDTH and ingredient_not_found:
                             cv2.imwrite('closeMarker.jpg', gray)
