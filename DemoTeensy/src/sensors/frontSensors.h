@@ -9,12 +9,10 @@ class FrontSensors
     private: 
         UltrasonicSensor _flSensors;
         UltrasonicSensor _frSensors;
+        bool left_right;
     public: 
         FrontSensors(uint8_t leftTrigPin, uint8_t leftEchoPin, uint8_t rightTrigPin, int8_t rightEchoPin);
-        void newMeasurement();
-        uint16_t getLeftDist();
-        uint16_t getRightDist();
-        void start();
+        int getDist();
 };
 
 #endif
