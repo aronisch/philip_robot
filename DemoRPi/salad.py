@@ -30,7 +30,7 @@ MIDDLE_X = IMAGE_WIDTH/2
 WRONG_DIRECTION_THRESHOLD = 90
 CLOSE_MARKER_WIDTH = 150
 MAX_SPEED = 0
-APPROACH_SPEED = 50
+APPROACH_SPEED = 100
 LOST_MARKER_ANGULAR_SPEED = 45
 
 SERIAL_PORT = "/dev/ttyAMA0"
@@ -62,7 +62,7 @@ def grabbingInstructions():
     robot.set_gripper_grabbing_position()
     time.sleep(1)
     robot.set_velocities(APPROACH_SPEED,0)
-    time.sleep(1.5)
+    time.sleep(1)
     robot.set_velocities(0,0)
     time.sleep(0.3)
     robot.close_gripper()
