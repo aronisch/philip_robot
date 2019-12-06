@@ -36,7 +36,7 @@ LOST_MARKER_ANGULAR_SPEED = 30
 SERIAL_PORT = "/dev/ttyAMA0"
 BAUDRATE = 9600
 
-angular_pid_marker = PID(Kp = 0.03, Ki = 0.0002)
+angular_pid_marker = PID(Kp = 0.05, Ki = 0.0002)
 linear_pid_marker = PID(Kp = 0.5)
 
 video_capture = cv2.VideoCapture(0)
@@ -52,7 +52,7 @@ is_arrived = False
 ingredient_not_found = True
 
 while True:
-    if path.exists("launch"):
+    if path.exists("launch") and ingredient_not_found:
         print("Salad Launched")
         while ingredient_not_found:
             # Capture frame-by-frame
@@ -107,9 +107,9 @@ while True:
 
             #Make the robot slowly turn until it sees the necessary marker
             else:
-                robot.set_velocities(0, LOST_MARKER_ANGULAR_SPEED)
+                #robot.set_velocities(0, LOST_MARKER_ANGULAR_SPEED)
                 time.sleep(0.5)
-                robot.set_velocities(0, 0)
+                #robot.set_velocities(0, 0)
 
             # Display the resulting frame
             # cv2.imshow('frame',gray)
