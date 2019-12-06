@@ -51,6 +51,8 @@ parameters =  aruco.DetectorParameters_create()
 is_arrived = False
 ingredient_not_found = True
 
+stopCounter = 0
+
 while True:
     if path.exists("launch") and ingredient_not_found:
         print("Salad Launched")
@@ -108,9 +110,13 @@ while True:
 
             #Make the robot slowly turn until it sees the necessary marker
             else:
-                #robot.set_velocities(0, LOST_MARKER_ANGULAR_SPEED)
+                if stopCounter:
+                    robot.set_velocities(0, LOST_MARKER_ANGULAR_SPEED)
+                    stopCounter = 0
+                else:
+                    stopCounter = stopCounter + 1
                 time.sleep(0.5)
-                #robot.set_velocities(0, 0)
+                robot.set_velocities(0, 0)
 
             # Display the resulting frame
             # cv2.imshow('frame',gray)
